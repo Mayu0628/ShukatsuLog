@@ -1,0 +1,39 @@
+.Sidebar {
+  background-color: #f6f6f6;
+  box-shadow: 6px 4px 11px -2px #e0e0e0;
+  border-radius: 0px;
+  padding: 20px 15px 0 15px;
+  overflow-y: auto;
+  color: #9b9b9b;
+  width: 18%; /* ここを変更 */
+  height: 88vh;
+}
+
+.Sidebar ul {
+  margin-top: 10px;
+}
+
+.Sidebar li {
+  list-style: none;
+  font-size: 15px;
+}
+
+.companyPlus {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.companyList {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  margin: 5px 0;
+  display: flex;
+}
+
+.faCaretDown {
+  margin-left: auto;
+}
