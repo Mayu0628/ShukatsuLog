@@ -44,7 +44,7 @@ export const Home = () => {
                   rel="noopener noreferrer"
                   className="urlLink"
                 >
-                  <img src={post.url.image} alt="" />
+                  <img src={post.url.image} alt={post.url.title} />
                   <h4>{post.url.title}</h4>
                 </a>
               </div>

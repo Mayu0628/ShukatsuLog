@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsisVertical, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import "./css/Sidebar.css";
@@ -27,7 +27,7 @@ const Sidebar = ({ isAuth }) => {
     <>
       {isAuth && ( // ログインしている場合のみ以下の内容をレンダリング
         <div className="Sidebar">
-          <div className="companyPlus">
+          <div className="company_header">
             企業一覧
             <Link to="/createpost">
               <FontAwesomeIcon icon={faPlus} />
@@ -37,8 +37,20 @@ const Sidebar = ({ isAuth }) => {
           <ul className="companyList">
             {companyName.map((post) => (
               <li key={post.id} className="title">
-                <span>{post.title}</span>
-                <FontAwesomeIcon icon={faCaretDown} className="faCaretDown" />
+                <Link to={`/${post.id}`}>
+                  <img
+                    src={post.url.image}
+                    alt={post.url.title}
+                    className="company_img_icon"
+                  />
+                  <span>{post.title}</span>
+                </Link>
+                <div className="detail-button">
+                  <FontAwesomeIcon
+                    icon={faEllipsisVertical}
+                    className="faCaretDown"
+                  />
+                </div>
               </li>
             ))}
           </ul>

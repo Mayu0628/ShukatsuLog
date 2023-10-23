@@ -26,7 +26,6 @@ function Navbar({ isAuth }) {
             <FontAwesomeIcon icon={faBuilding} />
             企業追加
           </Link>
-          <Link to="/companylist">企業リスト</Link>
           <Link to="/logout">
             <FontAwesomeIcon icon={faArrowRightToBracket} />
             ログアウト
