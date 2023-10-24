@@ -11,6 +11,7 @@ import CompanyList from "./components/CompanyList";
 import Slidebar from "./components/Sidebar";
 import CompanyData from "./components/CompanyData";
 import CompanyMemo from "./components/CompanyMemo";
+import Lp from "./components/Lp";
 
 function App() {
   const [isAuth, setIsAuth] = useState(
@@ -23,6 +24,7 @@ function App() {
       <div className="main-content">
         <Slidebar isAuth={isAuth} />
         <Routes>
+          <Route path="/lp" element={<Lp />} />
           <Route path="/" element={<Home />} />
           <Route path="/createpost" element={<CreatePost isAuth={isAuth} />} />
           <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />

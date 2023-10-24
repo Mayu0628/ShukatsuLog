@@ -10,7 +10,7 @@ const Logout = ({setIsAuth}) => {
     signOut(auth).then(() => {
       localStorage.clear();
       setIsAuth(false);
-      navigate('/login');
+      navigate('/lp');
   });
 };
   return (
