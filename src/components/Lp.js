@@ -4,13 +4,11 @@ import "./css/LP.css";
 const Lp = () => {
   return (
     <div className="lp-container">
-      {/* メインセクション */}
       <section className="main-section">
         <h1>就活をスムーズに</h1>
         <p>あなたの就活をサポートするアプリです</p>
       </section>
 
-      {/* 特徴セクション */}
       <section className="features-section" id="features">
         <h2>特徴</h2>
         <div className="feature">
