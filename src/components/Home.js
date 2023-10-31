@@ -1,76 +1,90 @@
-import { collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../firebase";
-import "./css/Home.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import "./css/CreatePost.css";
+import { useNavigate } from "react-router-dom";
 
-export const Home = () => {
-  const [postList, setPostList] = useState([]);
+export const Home = ({ isAuth }) => {
+  const [title, setTitle] = useState("");
 
+  const navigate = useNavigate();
+
+  //リンクレビューAPIを使用して、URLからメタデータを取得する
+  const [urlInput, setUrlInput] = useState(""); // 入力されたURLを管理するステート
+  const [urlData, setUrlData] = useState(null); // APIから取得したデータを管理するステート
+  // リンクレビューAPIを使用して、URLからメタデータを取得する
   useEffect(() => {
-    const getPosts = async () => {
-      // ログインしているユーザーのIDを取得
-      const userId = auth.currentUser?.uid;
-      if (userId) {
-        // ログインしているユーザーが投稿した投稿のみを取得するクエリを作成
-        const userPostsQuery = query(
-          collection(db, "posts"),
-          where("author.id", "==", userId)
-        );
-        // クエリを実行
-        const data = await getDocs(userPostsQuery);
-        // 取得したデータをステートにセット
-        setPostList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      }
-    };
-    getPosts();
-  }, []);
+    if (!urlInput) return; // urlInputが空か未設定の場合は、何もしない
 
-  //投稿削除
-  const handleDelete = async (id) => {
-    await deleteDoc(doc(db, "posts", id));
-    setPostList((prev) => prev.filter((post) => post.id !== id));
+    const fetchData = async () => {
+      const data = {
+        key: "b301954b87b475dc5138f0c5844b79ca",
+        q: urlInput,
+      };
+
+      const response = await fetch("https://api.linkpreview.net", {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify(data),
+      });
+
+      const json = await response.json();
+      setUrlData(json); // 取得したデータをurlData stateに設定
+    };
+
+    fetchData();
+  }, [urlInput]); // useEffectはurlInputが変更されるたびにトリガーされる
+
+  //データベースに投稿を追加する
+  const createPost = async () => {
+    await addDoc(collection(db, "posts"), {
+      title: title,
+      // postText: postText,
+      url: {
+        image: urlData?.image, // オプショナルチェイニングを使用
+        title: urlData?.title,
+        url: urlData?.url,
+      },
+      author: {
+        username: auth.currentUser.displayName,
+        id: auth.currentUser.uid,
+      },
+    });
+
+    navigate("/");
   };
 
+  //ユーザーが認証されていない場合、ログインページにリダイレクトする
+  useEffect(() => {
+    if (!isAuth) {
+      navigate("/login");
+    }
+  }, [isAuth, navigate]);
+
   return (
-    <div className="homePage">
-      {postList.map((post) => (
-        <div className="post" key={post.id}>
-          <div className="header">
-            <Link to={`/${post.id}`}>
-              <h3 className="title">{post.title}</h3>
-            </Link>
-            <Link to="/companypost">
-              <button className="edit">追加</button>
-            </Link>
-          </div>
-          {post.url && post.url.image && (
-            <div className="urlData">
-              <a
-                href={post.url.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="urlLink"
-              >
-                <img src={post.url.image} alt={post.url.title} />
-                <h4>{post.url.title}</h4>
-              </a>
-            </div>
-          )}
-          <div className="footer">
-            <div className="buttons">
-              <button
-                className="delete"
-                onClick={() => handleDelete(post.id)}
-              >
-                <FontAwesomeIcon icon={faTrashAlt} className="faTrashAlt" />
-              </button>
-            </div>
-          </div>
+    <div className="createPostPage">
+      <div className="postContainer">
+        <h2>企業を追加する</h2>
+        <div className="inputPost">
+          <div>会社名</div>
+          <input
+            type="text"
+            placeholder="企業名"
+            onChange={(e) => setTitle(e.target.value)}
+          />
         </div>
-      ))}
+        <div className="inputPost">
+          <div>URL</div>
+          <input
+            type="text"
+            placeholder="URL"
+            onChange={(e) => setUrlInput(e.target.value)}
+          />
+        </div>
+        <button className="createPostButton" onClick={createPost}>
+          記録
+        </button>
+      </div>
     </div>
   );
 };
