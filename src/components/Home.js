@@ -1,13 +1,10 @@
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, query, where, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../firebase";
 import "./css/CreatePost.css";
-import { useNavigate } from "react-router-dom";
 
-export const Home = ({ isAuth }) => {
+export const Home = () => {
   const [title, setTitle] = useState("");
-
-  const navigate = useNavigate();
 
   //リンクレビューAPIを使用して、URLからメタデータを取得する
   const [urlInput, setUrlInput] = useState(""); // 入力されたURLを管理するステート
@@ -35,31 +32,40 @@ export const Home = ({ isAuth }) => {
     fetchData();
   }, [urlInput]); // useEffectはurlInputが変更されるたびにトリガーされる
 
-  //データベースに投稿を追加する
   const createPost = async () => {
-    await addDoc(collection(db, "posts"), {
-      title: title,
-      // postText: postText,
-      url: {
-        image: urlData?.image, // オプショナルチェイニングを使用
-        title: urlData?.title,
-        url: urlData?.url,
-      },
-      author: {
-        username: auth.currentUser.displayName,
-        id: auth.currentUser.uid,
-      },
-    });
+    try {
+      // Firestoreからtitleが一致するドキュメントを検索
+      const q = query(collection(db, "posts"), where("title", "==", title));
+      const querySnapshot = await getDocs(q);
 
-    navigate("/");
-  };
+      // ドキュメントが存在する場合はアラートを表示して終了
+      if (!querySnapshot.empty) {
+        alert("すでに登録されています");
+        return;
+      }
 
-  //ユーザーが認証されていない場合、ログインページにリダイレクトする
-  useEffect(() => {
-    if (!isAuth) {
-      navigate("/login");
+      // ドキュメントが存在しない場合はデータベースに追加
+      await addDoc(collection(db, "posts"), {
+        title: title,
+        // postText: postText,
+        url: {
+          image: urlData?.image, // オプショナルチェイニングを使用
+          title: urlData?.title,
+          url: urlData?.url,
+        },
+        author: {
+          username: auth.currentUser.displayName,
+          id: auth.currentUser.uid,
+        },
+      });
+
+      alert("追加しました");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      alert("エラーが発生しました。再度試してください。");
     }
-  }, [isAuth, navigate]);
+  };
 
   return (
     <div className="createPostPage">

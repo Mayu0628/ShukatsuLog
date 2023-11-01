@@ -5,9 +5,7 @@ import "./css/Navbar.css";
 import { db, auth } from "../firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faHouse,
-  faArrowRightToBracket,
-  faBuilding,
+  faArrowRightToBracket
 } from "@fortawesome/free-solid-svg-icons";
 
 function Navbar({ isAuth }) {
@@ -44,6 +42,10 @@ function Navbar({ isAuth }) {
         </Link>
       ) : (
         <>
+          <Link to="/logout">
+            <FontAwesomeIcon icon={faArrowRightToBracket} />
+            ログアウト
+          </Link>
           <div className="user-profile">
             {user && (
               <img
@@ -54,18 +56,6 @@ function Navbar({ isAuth }) {
             )}
             {error && <div className="error-message">{error}</div>}
           </div>
-          <Link to="/">
-            <FontAwesomeIcon icon={faHouse} />
-            ホーム
-          </Link>
-          <Link to="/companymemo">
-            <FontAwesomeIcon icon={faBuilding} />
-            メモする
-          </Link>
-          <Link to="/logout">
-            <FontAwesomeIcon icon={faArrowRightToBracket} />
-            ログアウト
-          </Link>
         </>
       )}
     </nav>

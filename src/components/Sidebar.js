@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisVertical, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import "./css/Sidebar.css";
+import { faHouse, faBuilding } from "@fortawesome/free-solid-svg-icons";
 
 const Sidebar = () => {
   const [posts, setPosts] = useState([]);
@@ -25,12 +26,21 @@ const Sidebar = () => {
 
   return (
     <div className="Sidebar">
-      <div className="company_header">
-        企業一覧
-        <Link to="/createpost">
-          <FontAwesomeIcon icon={faPlus} />
+      <div className="Sidebar_nav">
+        <Link to="/">
+          <div className="nav-item">
+            <FontAwesomeIcon icon={faHouse} className="fa-svg"/>
+            <span>ホーム</span>
+          </div>
+        </Link>
+        <Link to="/companymemo">
+          <div className="nav-item">
+            <FontAwesomeIcon icon={faBuilding} className="fa-svg"/>
+            <span>メモする</span>
+          </div>
         </Link>
       </div>
+      <div className="company_header">企業一覧</div>
       {error && <div className="error-message">{error}</div>}
       <ul className="companyList">
         {posts.map((post) => (
