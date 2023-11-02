@@ -10,6 +10,7 @@ import {
   where,
 } from "firebase/firestore";
 import { Link } from "react-router-dom";
+import "./css/CompanyData.css";
 
 function CompanyData() {
   const { id } = useParams();
@@ -22,15 +23,16 @@ function CompanyData() {
       const postSnapshot = await getDoc(postDoc);
 
       if (postSnapshot.exists()) {
-        setData({ ...postSnapshot.data(), id: postSnapshot.id });
+        const postData = { ...postSnapshot.data(), id: postSnapshot.id };
+        setData(postData);
 
-        // posts の title に一致する companymemo を取得
         const memoQuery = query(
           collection(db, "companymemo"),
-          where("title", "==", postSnapshot.data().title)
+          where("title", "==", postData.title)
         );
         const memoSnapshot = await getDocs(memoQuery);
-        setMatchingMemos(memoSnapshot.docs.map((doc) => doc.data()));
+        const memos = memoSnapshot.docs.map((doc) => doc.data());
+        setMatchingMemos(memos);
       }
     };
 
@@ -38,20 +40,27 @@ function CompanyData() {
   }, [id]);
 
   return (
-    <div>
+    <div className="CompanyData">
       {data ? (
         <>
-          <h1>{data.title}</h1>
-          {matchingMemos.map((memo, index) => (
-            <div key={index}>
-              <p>{memo.title}</p>
-              <p>{memo.postText}</p>
-            </div>
-          ))}
-          <Link to="/companymemo">
-            {" "}
-            <button>追加</button>
-          </Link>
+          <div className="CompanyData_header">
+            <header>{data.title}</header>
+            <Link to="/companymemo">
+              <button>追加</button>
+            </Link>
+          </div>
+          {matchingMemos.map((memo, index) => {
+            // ここで createdAt を変換し、フォーマットする
+            const createdAt = memo.createdAt?.toDate(); // JavaScript の Date オブジェクトに変換
+            const formattedDate = createdAt?.toLocaleDateString(); // ロケールに応じた形式で日付をフォーマット
+            const formattedTime = createdAt?.toLocaleTimeString(); // ロケールに応じた形式で時刻をフォーマット
+            return (
+              <div key={index} className="post">
+                {createdAt && <p>投稿日時: {formattedDate} {formattedTime}</p>}
+                <p>{memo.postText}</p>
+              </div>
+            );
+          })}
         </>
       ) : (
         <p>Loading...</p>

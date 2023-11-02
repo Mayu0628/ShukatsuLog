@@ -1,55 +1,89 @@
+import React, { useEffect, useState, useCallback } from "react";
 import { addDoc, collection, query, where, getDocs } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
 import { auth, db } from "../firebase";
 import "./css/CreatePost.css";
 
 export const Home = () => {
   const [title, setTitle] = useState("");
+  const [urlInput, setUrlInput] = useState("");
+  const [urlData, setUrlData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  //リンクレビューAPIを使用して、URLからメタデータを取得する
-  const [urlInput, setUrlInput] = useState(""); // 入力されたURLを管理するステート
-  const [urlData, setUrlData] = useState(null); // APIから取得したデータを管理するステート
-  // リンクレビューAPIを使用して、URLからメタデータを取得する
-  useEffect(() => {
-    if (!urlInput) return; // urlInputが空か未設定の場合は、何もしない
+  const fetchData = useCallback(async () => {
+    if (!urlInput) return;
 
-    const fetchData = async () => {
-      const data = {
-        key: "b301954b87b475dc5138f0c5844b79ca",
-        q: urlInput,
-      };
+    setIsLoading(true);
 
+    const data = {
+      key: process.env.REACT_APP_LINK_PREVIEW_API_KEY,
+      q: urlInput,
+    };
+
+    try {
       const response = await fetch("https://api.linkpreview.net", {
         method: "POST",
         mode: "cors",
         body: JSON.stringify(data),
       });
 
-      const json = await response.json();
-      setUrlData(json); // 取得したデータをurlData stateに設定
-    };
+      if (!response.ok) {
+        console.error("API response was not ok", response);
+        alert("URLの取得に失敗しました。");
+        return;
+      }
 
-    fetchData();
-  }, [urlInput]); // useEffectはurlInputが変更されるたびにトリガーされる
+      const json = await response.json();
+
+      if (
+        typeof json.image !== "string" ||
+        typeof json.title !== "string" ||
+        typeof json.url !== "string"
+      ) {
+        console.error("Invalid response format", json);
+        alert("取得したデータの形式が正しくありません。");
+        return;
+      }
+
+      setUrlData(json);
+    } catch (error) {
+      console.error("Error fetching data", error);
+      alert("データの取得中にエラーが発生しました。");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [urlInput]);
+
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      fetchData();
+    }, 500); // 500ミリ秒のデバウンス時間
+    return () => clearTimeout(timerId);
+  }, [urlInput, fetchData]);
 
   const createPost = async () => {
+    if (!auth.currentUser) {
+      alert("ログインしてください");
+      return;
+    }
+
+    if (isLoading) {
+      alert("データをロード中です。しばらく待ってから再度試してください。");
+      return;
+    }
+
     try {
-      // Firestoreからtitleが一致するドキュメントを検索
       const q = query(collection(db, "posts"), where("title", "==", title));
       const querySnapshot = await getDocs(q);
 
-      // ドキュメントが存在する場合はアラートを表示して終了
       if (!querySnapshot.empty) {
         alert("すでに登録されています");
         return;
       }
 
-      // ドキュメントが存在しない場合はデータベースに追加
       await addDoc(collection(db, "posts"), {
         title: title,
-        // postText: postText,
         url: {
-          image: urlData?.image, // オプショナルチェイニングを使用
+          image: urlData?.image || "../assets/No_image.jpeg",
           title: urlData?.title,
           url: urlData?.url,
         },
@@ -60,7 +94,9 @@ export const Home = () => {
       });
 
       alert("追加しました");
-      window.location.reload();
+      setTitle("");
+      setUrlInput("");
+      setUrlData(null);
     } catch (error) {
       console.error("Error adding document: ", error);
       alert("エラーが発生しました。再度試してください。");
@@ -76,6 +112,7 @@ export const Home = () => {
           <input
             type="text"
             placeholder="企業名"
+            value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
         </div>
@@ -84,9 +121,11 @@ export const Home = () => {
           <input
             type="text"
             placeholder="URL"
+            value={urlInput}
             onChange={(e) => setUrlInput(e.target.value)}
           />
         </div>
+        {isLoading && <div>Loading...</div>}
         <button className="createPostButton" onClick={createPost}>
           記録
         </button>

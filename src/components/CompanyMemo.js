@@ -28,16 +28,23 @@ const CompanyMemo = ({ isAuth }) => {
   }, []);
 
   const createPost = async () => {
-    await addDoc(collection(db, "companymemo"), {
-      title: SelectedCompanyName,
-      postText: postText,
-      author: {
-        username: auth.currentUser.displayName,
-        id: auth.currentUser.uid,
-      },
-    });
+    try {
+      const currentDate = new Date();
+      await addDoc(collection(db, "companymemo"), {
+        title: SelectedCompanyName,
+        postText: postText,
+        author: {
+          username: auth.currentUser.displayName,
+          id: auth.currentUser.uid,
+        },
+        createdAt: currentDate,
+      });
 
-    navigate("/");
+      navigate("/");
+    } catch (error) {
+      console.error("投稿の作成中にエラーが発生しました", error);
+      alert("投稿の作成中にエラーが発生しました。再試行してください。");
+    }
   };
 
   useEffect(() => {
