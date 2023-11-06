@@ -18,14 +18,14 @@ function App() {
 
   return (
     <Router>
-      <Navbar isAuth={isAuth} />
+      <Navbar setIsAuth={setIsAuth}/>
       <div className="main-content">
         <Slidebar isAuth={isAuth} />
         <Routes>
           <Route path="/lp" element={<Lp />} />
           <Route path="/" element={<Home isAuth={isAuth}/>} />
-          <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
-          <Route path="/logout" element={<Logout setIsAuth={setIsAuth} />} />
+          <Route path="/login" element={<Login  />} />
+          <Route path="/logout" element={<Logout />} />
           <Route
             path="/companylist"
             element={<CompanyList isAuth={isAuth} />}

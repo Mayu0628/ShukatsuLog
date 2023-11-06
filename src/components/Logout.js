@@ -2,6 +2,7 @@ import { signOut } from 'firebase/auth';
 import React from 'react'
 import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
+import "./css/Navbar.css";
 
 const Logout = ({setIsAuth}) => {
   const navigate = useNavigate();
@@ -14,8 +15,7 @@ const Logout = ({setIsAuth}) => {
   });
 };
   return (
-    <div>
-      <p>ログアウトする</p>
+    <div className='account'>
       <button onClick={ logout }>ログアウト</button>
     </div>
   )

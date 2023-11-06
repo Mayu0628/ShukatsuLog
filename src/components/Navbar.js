@@ -1,63 +1,72 @@
 import React, { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
-import { Link } from "react-router-dom";
 import "./css/Navbar.css";
 import { db, auth } from "../firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowRightToBracket
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import Login from "./Login";
+import Logout from "./Logout";
 
-function Navbar({ isAuth }) {
+function Navbar({setIsAuth}) {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
 
+  // 認証状態のリスナーをセットアップ
   useEffect(() => {
-    if (isAuth) {
-      const userId = auth.currentUser?.uid;
-      if (userId) {
-        const userRef = doc(db, "users", userId);
+    // onAuthStateChanged は認証状態が変わるたびに呼ばれる
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        // ユーザーがログインしている場合の処理
+        const userRef = doc(db, "users", user.uid);
         getDoc(userRef)
           .then((docSnap) => {
             if (docSnap.exists()) {
               setUser({ ...docSnap.data(), id: docSnap.id });
+              setIsAuth(true); // 認証状態を更新
             } else {
+              // ドキュメントが存在しない場合
               setError("ユーザーが見つかりません");
             }
           })
           .catch((err) => {
+            // エラーが発生した場合
             setError("データの取得中にエラーが発生しました。");
             console.error("データ取得エラー:", err);
           });
+      } else {
+        // ユーザーがログアウトしている場合の処理
+        setUser(null);
+        setIsAuth(false);
       }
-    }
-  }, [isAuth]);
+    });
+
+    // コンポーネントのクリーンアップ時にリスナーを解除
+    return () => unsubscribe();
+  }, [setIsAuth]);
 
   return (
     <nav>
-      {!isAuth ? (
-        <Link to="/login">
-          <FontAwesomeIcon icon={faArrowRightToBracket} />
-          ログイン
-        </Link>
-      ) : (
-        <>
-          <Link to="/logout">
+      {user ? (
+        <div className="user-section">
+          <Logout setIsAuth={setIsAuth}>
             <FontAwesomeIcon icon={faArrowRightToBracket} />
-            ログアウト
-          </Link>
+          </Logout>
           <div className="user-profile">
-            {user && (
-              <img
-                src={user.photoURL}
-                alt={user.displayName}
-                className="user_img_icon"
-              />
-            )}
-            {error && <div className="error-message">{error}</div>}
+            <img
+              src={user.photoURL}
+              alt={user.displayName}
+              className="user-img-icon"
+            />
           </div>
-        </>
+        </div>
+      ) : (
+        <div className="login-wrapper">
+          <Login setIsAuth={setIsAuth}>
+            <FontAwesomeIcon icon={faArrowRightToBracket} />
+          </Login>
+        </div>
       )}
+      {error && <div className="error-message">{error}</div>}
     </nav>
   );
 }

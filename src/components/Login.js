@@ -3,6 +3,7 @@ import { doc, setDoc } from "firebase/firestore";
 import React from "react";
 import { auth, provider, db } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import "./css/Navbar.css";
 
 const Login = ({ setIsAuth }) => {
   const navigate = useNavigate();
@@ -24,7 +25,6 @@ const Login = ({ setIsAuth }) => {
         displayName: user.displayName,
         email: user.email,
         photoURL: user.photoURL,
-        // 他に保存したい情報があればここに追加
       }, { merge: true }); // ドキュメントが既に存在する場合はマージ
 
       // ホームページにリダイレクト
@@ -36,9 +36,8 @@ const Login = ({ setIsAuth }) => {
   };
 
   return (
-    <div>
-      <p>ログインして始める</p>
-      <button onClick={logInWithGoogle}>Googleでログイン</button>
+    <div className="account">
+      <button onClick={logInWithGoogle}>ログイン</button>
     </div>
   );
 };

@@ -3,11 +3,11 @@ nav {
   justify-content: flex-end;
   align-items: center;
   background-color: #fff;
-  height: 15%;
+  height: 40px;
   gap: 45px;
   box-shadow: 0px 4px 11px -2px #e0e0e0;
   border-radius: 0px;
-  padding: 15px 0 15px 0;
+  padding: 15px 30px;
 }
 
 nav a {
@@ -24,11 +24,43 @@ nav a svg {
   margin-right: 5px;
 }
 
-.user_img_icon {
-  width: 35px;
-  height: 35px;
-  border-radius: 100%;
-  object-fit: cover;
-  margin-right: 30px;
+.user-section,
+.login-wrapper {
+  display: flex;
   align-items: center;
+  gap: 5px;
+}
+
+.user-section {
+  justify-content: flex-end;
+}
+
+.login-wrapper {
+  justify-content: flex-end;
+}
+
+.user-img-icon {
+  width: auto;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.account {
+  margin-right: 20px;
+  align-items: center;
+}
+
+.account button {
+  color: #fff;
+  background-color: #b9b9b9;
+  border-bottom: 5px solid #a3a3a3;
+  padding: 5px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.account button:hover {
+  color: #fff;
+  background: #c7c7c7;
 }
