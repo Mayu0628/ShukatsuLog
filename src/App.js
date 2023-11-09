@@ -1,6 +1,11 @@
 import { useState } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import Logout from "./components/Logout";
@@ -16,26 +21,29 @@ function App() {
     localStorage.getItem("isAuth") === "true"
   );
 
+  const renderAuthRoute = (Component) => {
+    return isAuth ? <Component isAuth={isAuth} /> : <Navigate to="/lp" />;
+  };
+
+  const sidebar = isAuth ? <Slidebar isAuth={isAuth} /> : null;
+
   return (
     <Router>
-      <Navbar setIsAuth={setIsAuth}/>
+      <Navbar setIsAuth={setIsAuth} />
       <div className="main-content">
-        <Slidebar isAuth={isAuth} />
+        {sidebar}
         <Routes>
           <Route path="/lp" element={<Lp />} />
-          <Route path="/" element={<Home isAuth={isAuth}/>} />
-          <Route path="/login" element={<Login  />} />
-          <Route path="/logout" element={<Logout />} />
+          <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
+          <Route path="/logout" element={<Logout setIsAuth={setIsAuth} />} />
+          <Route path="/" element={renderAuthRoute(Home)} />
+          <Route path="/companylist" element={renderAuthRoute(CompanyList)} />
           <Route
-            path="/companylist"
-            element={<CompanyList isAuth={isAuth} />}
+            path="/:id"
+            element={isAuth ? <CompanyData /> : <Navigate to="/lp" />}
           />
-          <Route path="/:id" element={<CompanyData />} />
-          <Route path="*" element={<h1>Not Found</h1>} />
-          <Route
-            path="/companymemo"
-            element={<CompanyMemo isAuth={isAuth} />}
-          />
+          <Route path="/companymemo" element={renderAuthRoute(CompanyMemo)} />
+          <Route path="*" element={<h1>404 Not Found</h1>} />
         </Routes>
       </div>
     </Router>

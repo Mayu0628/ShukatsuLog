@@ -1,27 +1,40 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase";
-import "./css/Sidebar.css";
-import { faHouse, faBuilding } from "@fortawesome/free-solid-svg-icons";
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsisVertical, faHouse, faBuilding } from '@fortawesome/free-solid-svg-icons';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../firebase';
+import './css/Sidebar.css';
+import { auth } from '../firebase';
+// import { useAuthState } from 'react-firebase-hooks/auth';
 
 const Sidebar = () => {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState(null);
+  // const [user] = useAuthState(auth); // react-firebase-hooksの場合
 
   useEffect(() => {
-    const getPosts = async () => {
+    const getPosts = async (uid) => {
       try {
-        const data = await getDocs(collection(db, "posts"));
-        setPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+        const postsRef = collection(db, 'posts');
+        const q = query(postsRef, where('author.id', '==', uid));
+        const querySnapshot = await getDocs(q);
+        setPosts(querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
       } catch (err) {
-        setError("データの取得中にエラーが発生しました。");
-        console.error("データ取得エラー:", err);
+        setError('データの取得中にエラーが発生しました。');
+        console.error('データ取得エラー:', err);
       }
     };
-    getPosts();
+
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        getPosts(user.uid);
+      } else {
+        setError('ログインしているアカウントの投稿のみを表示することができます。');
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   return (
@@ -29,13 +42,13 @@ const Sidebar = () => {
       <div className="Sidebar_nav">
         <Link to="/">
           <div className="nav-item">
-            <FontAwesomeIcon icon={faHouse} className="fa-svg"/>
+            <FontAwesomeIcon icon={faHouse} className="fa-svg" />
             <span>ホーム</span>
           </div>
         </Link>
         <Link to="/companymemo">
           <div className="nav-item">
-            <FontAwesomeIcon icon={faBuilding} className="fa-svg"/>
+            <FontAwesomeIcon icon={faBuilding} className="fa-svg" />
             <span>メモする</span>
           </div>
         </Link>

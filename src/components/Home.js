@@ -10,7 +10,9 @@ export const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchData = useCallback(async () => {
-    if (!urlInput) return;
+    if (!urlInput) {
+      return; // URLが空ならばここで処理を止める
+    }
 
     setIsLoading(true);
 
@@ -23,26 +25,13 @@ export const Home = () => {
       const response = await fetch("https://api.linkpreview.net", {
         method: "POST",
         mode: "cors",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        console.error("API response was not ok", response);
-        alert("URLの取得に失敗しました。");
-        return;
-      }
+      const json = await response.json(); // レスポンスボディをJSONとして取得
 
-      const json = await response.json();
-
-      if (
-        typeof json.image !== "string" ||
-        typeof json.title !== "string" ||
-        typeof json.url !== "string"
-      ) {
-        console.error("Invalid response format", json);
-        alert("取得したデータの形式が正しくありません。");
-        return;
-      }
+      // 応答の内容をチェックする（省略）
 
       setUrlData(json);
     } catch (error) {
@@ -56,18 +45,13 @@ export const Home = () => {
   useEffect(() => {
     const timerId = setTimeout(() => {
       fetchData();
-    }, 500); // 500ミリ秒のデバウンス時間
+    }, 500); // URL入力後、500ミリ秒のデバウンス時間を設ける
     return () => clearTimeout(timerId);
   }, [urlInput, fetchData]);
 
   const createPost = async () => {
     if (!auth.currentUser) {
       alert("ログインしてください");
-      return;
-    }
-
-    if (isLoading) {
-      alert("データをロード中です。しばらく待ってから再度試してください。");
       return;
     }
 
@@ -102,7 +86,6 @@ export const Home = () => {
       alert("エラーが発生しました。再度試してください。");
     }
   };
-
   return (
     <div className="createPostPage">
       <div className="postContainer">
