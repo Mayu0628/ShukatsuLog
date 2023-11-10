@@ -38,25 +38,34 @@
   width: 35px;
 }
 
-/* 会社名 */
+.company_header {
+  margin-bottom: 15px;
+}
+
 .title {
   display: flex;
-  margin-top: 15px;
+  justify-content: center;
+  align-items: center;
   list-style: none;
 }
 
-/* 会社アイコン */
 .company_img_icon {
   box-shadow: 6px 4px 11px -2px #e0e0e0;
   border-radius: 5px;
   margin-right: 10px;
+  width: 35px;
+  height: 35px;
 }
 
-/* 詳細ボタン */
 .detail-button {
-  text-align: right;
+  margin-left: auto;
+  padding-right: 10px;
 }
 
-.faCaretDown {
-  margin-left: auto;
+.title:hover {
+  background-color: #f2f2f2;
+}
+
+.detail-button:hover .faCaretDown {
+  color: #000;
 }

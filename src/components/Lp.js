@@ -1,12 +1,13 @@
 import React from "react";
 import "./css/LP.css";
+import githubMark from "../assets/github-mark.png";
 
 const Lp = () => {
   return (
     <div className="lp-container">
       <section className="main-section">
         <h1>就活をスムーズに</h1>
-        <p>あなたの就活をサポートするアプリです</p>
+        <p>就活の記録を残せるアプリです</p>
       </section>
 
       <section className="features-section" id="features">
@@ -24,8 +25,7 @@ const Lp = () => {
           <p>説明文</p>
         </div>
       </section>
-
-      {/* テストモニタルの声セクション */}
+      
       <section className="testimonials-section" id="testimonials">
         <h2>ユーザーの声</h2>
         <blockquote>
@@ -40,14 +40,10 @@ const Lp = () => {
 
       {/* フッター */}
       <footer>
-        <p>&copy; 2023 就活ログ</p>
+        <p>&copy; 就活ログ</p>
         <ul>
-          <li>
-            <a href="#privacy">プライバシーポリシー</a>
-          </li>
-          <li>
-            <a href="#terms">利用規約</a>
-          </li>
+          <li>Mayu0628</li>
+          <img src={githubMark} alt="GitHub Mark"></img>
         </ul>
       </footer>
     </div>

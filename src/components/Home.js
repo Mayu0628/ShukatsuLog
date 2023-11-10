@@ -7,17 +7,14 @@ export const Home = () => {
   const [title, setTitle] = useState("");
   const [urlInput, setUrlInput] = useState("");
   const [urlData, setUrlData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   const fetchData = useCallback(async () => {
     if (!urlInput) {
-      return; // URLが空ならばここで処理を止める
+      return;
     }
 
-    setIsLoading(true);
-
     const data = {
-      key: process.env.REACT_APP_LINK_PREVIEW_API_KEY,
+      key: "c5c75cc8e60e6bd554b556a03066c66e",
       q: urlInput,
     };
 
@@ -27,25 +24,28 @@ export const Home = () => {
         mode: "cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
+      }).then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response;
       });
 
-      const json = await response.json(); // レスポンスボディをJSONとして取得
-
-      // 応答の内容をチェックする（省略）
+      console.log(response);
+      const json = await response.json();
 
       setUrlData(json);
     } catch (error) {
-      console.error("Error fetching data", error);
-      alert("データの取得中にエラーが発生しました。");
-    } finally {
-      setIsLoading(false);
+      console.log(error);
+      console.error("Error fetching data: ", error);
+      alert("エラーが発生しました。再度試してください。");
     }
   }, [urlInput]);
 
   useEffect(() => {
     const timerId = setTimeout(() => {
       fetchData();
-    }, 500); // URL入力後、500ミリ秒のデバウンス時間を設ける
+    }, 500);
     return () => clearTimeout(timerId);
   }, [urlInput, fetchData]);
 
@@ -85,6 +85,7 @@ export const Home = () => {
       console.error("Error adding document: ", error);
       alert("エラーが発生しました。再度試してください。");
     }
+    window.location.reload();
   };
   return (
     <div className="createPostPage">
@@ -108,7 +109,6 @@ export const Home = () => {
             onChange={(e) => setUrlInput(e.target.value)}
           />
         </div>
-        {isLoading && <div>Loading...</div>}
         <button className="createPostButton" onClick={createPost}>
           記録
         </button>
