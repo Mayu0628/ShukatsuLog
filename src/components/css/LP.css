@@ -5,13 +5,29 @@
 }
 
 .main-section {
-  text-align: center;
+  display: flex;
+  align-items: center;
   padding: 50px 20px;
   background-image: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 1),
-    rgba(136, 212, 255, 1)
+    rgba(255, 255, 255, 1) 32%,
+    rgba(153, 218, 255, 1)
   );
+}
+
+.left-container {
+  width: 50%;
+  padding: 0 20px;
+}
+
+.left-container img {
+  width: 50%;
+  margin-left: 120px;
+}
+
+.right-container {
+  width: 50%;
+  padding: 0 20px;
 }
 
 .main-section h1 {
@@ -23,13 +39,43 @@
   padding: 50px 20px;
 }
 
+.features {
+  display: flex;
+  justify-content: center;
+}
+
+.feature {
+  width: 30%;
+  border-radius: 50%;
+  background-color: #7fd0ff;
+  margin: 20px;
+  padding: 50px;
+  text-align: center;
+  align-items: center;
+  box-shadow: 6px 4px 11px -2px #b8b8b8;
+}
+
+.icon {
+  font-size: 50px;
+  color: #fff;
+  margin: 30px;
+}
+
 .testimonials-section {
   padding: 50px 20px;
   background-image: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 1),
-    rgba(136, 212, 255, 1)
+    rgba(92, 196, 255, 1),
+    rgba(255, 255, 255, 1)
   );
+}
+
+.testimonials-section {
+  text-align: center;
+}
+
+.testimonials-section h2 {
+  margin-bottom: 30px;
 }
 
 .features-section h2,

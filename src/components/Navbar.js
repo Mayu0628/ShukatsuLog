@@ -6,8 +6,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
 import Login from "./Login";
 import Logout from "./Logout";
+import Logo from "../assets/Logo.jpeg";
 
-function Navbar({setIsAuth}) {
+function Navbar({ setIsAuth }) {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
 
@@ -46,6 +47,9 @@ function Navbar({setIsAuth}) {
 
   return (
     <nav>
+      <div className="Logo">
+        <img src={Logo} alt="Logo"></img>
+      </div>
       {user ? (
         <div className="user-section">
           <Logout setIsAuth={setIsAuth}>
@@ -60,7 +64,7 @@ function Navbar({setIsAuth}) {
           </div>
         </div>
       ) : (
-        <div className="login-wrapper">
+        <div className="user-section">
           <Login setIsAuth={setIsAuth}>
             <FontAwesomeIcon icon={faArrowRightToBracket} />
           </Login>
