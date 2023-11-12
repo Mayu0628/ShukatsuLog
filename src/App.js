@@ -17,15 +17,23 @@ import CompanyMemo from "./components/CompanyMemo";
 import Lp from "./components/Lp";
 
 function App() {
-  const [isAuth, setIsAuth] = useState(
-    localStorage.getItem("isAuth") === "true"
-  );
+  // 認証状態を管理する
+  const [isAuth, setIsAuth] = useState(localStorage.getItem("isAuth") === "true");
 
+  // 認証が必要なルートのレンダリングを担当する関数
   const renderAuthRoute = (Component) => {
+    // 認証されている場合は指定されたコンポーネントを、そうでなければLPページにリダイレクト
     return isAuth ? <Component isAuth={isAuth} /> : <Navigate to="/lp" />;
   };
 
+  // サイドバーの表示を制御するロジック
   const sidebar = isAuth ? <Slidebar isAuth={isAuth} /> : null;
+
+  // LPページへのアクセスを制御する関数
+  const renderLpOrRedirect = () => {
+    // 認証されている場合はホームページにリダイレクトし、そうでない場合はLPを表示
+    return isAuth ? <Navigate to="/" /> : <Lp />;
+  };
 
   return (
     <Router>
@@ -33,7 +41,8 @@ function App() {
       <div className="main-content">
         {sidebar}
         <Routes>
-          <Route path="/lp" element={<Lp />} />
+          {/* 各ルートの設定 */}
+          <Route path="/lp" element={renderLpOrRedirect()}/>
           <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
           <Route path="/logout" element={<Logout setIsAuth={setIsAuth} />} />
           <Route path="/" element={renderAuthRoute(Home)} />
