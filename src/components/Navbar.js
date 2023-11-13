@@ -12,36 +12,37 @@ function Navbar({ setIsAuth }) {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
 
-  // 認証状態のリスナーをセットアップ
+  // useEffectフックを使用して、コンポーネントのマウント時にFirebaseの認証リスナーを設定します。
   useEffect(() => {
-    // onAuthStateChanged は認証状態が変わるたびに呼ばれる
+    // onAuthStateChangedは、認証状態の変更を監視するリスナーです。
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        // ユーザーがログインしている場合の処理
+        // ユーザーがログインしている場合、Firebaseデータベースからユーザーデータを取得します。
         const userRef = doc(db, "users", user.uid);
         getDoc(userRef)
           .then((docSnap) => {
             if (docSnap.exists()) {
+              // ドキュメントが存在する場合、ユーザー情報をセットします。
               setUser({ ...docSnap.data(), id: docSnap.id });
-              setIsAuth(true); // 認証状態を更新
+              setIsAuth(true); // 認証状態をtrueに設定します。
             } else {
-              // ドキュメントが存在しない場合
+              // ユーザードキュメントが存在しない場合、エラーメッセージを設定します。
               setError("ユーザーが見つかりません");
             }
           })
           .catch((err) => {
-            // エラーが発生した場合
+            // データ取得中にエラーが発生した場合、エラーメッセージを設定します。
             setError("データの取得中にエラーが発生しました。");
             console.error("データ取得エラー:", err);
           });
       } else {
-        // ユーザーがログアウトしている場合の処理
+        // ユーザーがログアウトしている場合、ユーザー情報をnullに設定し、認証状態をfalseに設定します。
         setUser(null);
         setIsAuth(false);
       }
     });
 
-    // コンポーネントのクリーンアップ時にリスナーを解除
+    // コンポーネントのアンマウント時にリスナーを解除します。
     return () => unsubscribe();
   }, [setIsAuth]);
 
@@ -51,6 +52,7 @@ function Navbar({ setIsAuth }) {
         <img src={Logo} alt="Logo"></img>
       </div>
       {user ? (
+        // ユーザーがログインしている場合、Logoutコンポーネントとユーザープロファイルを表示します。
         <div className="user-section">
           <Logout setIsAuth={setIsAuth}>
             <FontAwesomeIcon icon={faArrowRightToBracket} />
@@ -64,12 +66,14 @@ function Navbar({ setIsAuth }) {
           </div>
         </div>
       ) : (
+        // ユーザーがログアウトしている場合、Loginコンポーネントを表示します。
         <div className="user-section">
           <Login setIsAuth={setIsAuth}>
             <FontAwesomeIcon icon={faArrowRightToBracket} />
           </Login>
         </div>
       )}
+      {/* // エラーがある場合、エラーメッセージを表示します。 */}
       {error && <div className="error-message">{error}</div>}
     </nav>
   );

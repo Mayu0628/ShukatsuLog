@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsisVertical, faHouse, faBuilding } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faBuilding } from '@fortawesome/free-solid-svg-icons';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import './css/Sidebar.css';
@@ -67,10 +67,10 @@ const Sidebar = () => {
               <span>{post.title}</span>
             </Link>
             <div className="detail-button">
-              <FontAwesomeIcon
+              {/* <FontAwesomeIcon
                 icon={faEllipsisVertical}
                 className="faCaretDown"
-              />
+              /> */}
             </div>
           </li>
         ))}

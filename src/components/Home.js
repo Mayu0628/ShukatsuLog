@@ -1,17 +1,16 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { addDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { auth, db } from "../firebase";
-import "./css/CreatePost.css";
+import "./css/Home.css";
 
 export const Home = () => {
   const [title, setTitle] = useState("");
   const [urlInput, setUrlInput] = useState("");
   const [urlData, setUrlData] = useState(null);
+  const [error, setError] = useState("");
 
   const fetchData = useCallback(async () => {
-    if (!urlInput) {
-      return;
-    }
+    if (!urlInput) return;
 
     const data = {
       key: "c5c75cc8e60e6bd554b556a03066c66e",
@@ -24,34 +23,24 @@ export const Home = () => {
         mode: "cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-      }).then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response;
       });
+      if (!response.ok) throw new Error("データ取得に失敗しました");
 
-      console.log(response);
       const json = await response.json();
-
       setUrlData(json);
     } catch (error) {
-      console.log(error);
-      console.error("Error fetching data: ", error);
-      alert("エラーが発生しました。再度試してください。");
+      setError(error.message);
     }
   }, [urlInput]);
 
   useEffect(() => {
-    const timerId = setTimeout(() => {
-      fetchData();
-    }, 500);
+    const timerId = setTimeout(() => fetchData(), 500);
     return () => clearTimeout(timerId);
   }, [urlInput, fetchData]);
 
   const createPost = async () => {
     if (!auth.currentUser) {
-      alert("ログインしてください");
+      setError("ログインが必要です");
       return;
     }
 
@@ -60,12 +49,12 @@ export const Home = () => {
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-        alert("すでに登録されています");
+        setError("このタイトルはすでに存在します");
         return;
       }
 
       await addDoc(collection(db, "posts"), {
-        title: title,
+        title,
         url: {
           image: urlData?.image || "../assets/No_image.jpeg",
           title: urlData?.title,
@@ -77,20 +66,21 @@ export const Home = () => {
         },
       });
 
-      alert("追加しました");
       setTitle("");
       setUrlInput("");
       setUrlData(null);
+      setError("投稿が追加されました");
     } catch (error) {
-      console.error("Error adding document: ", error);
-      alert("エラーが発生しました。再度試してください。");
+      setError("投稿の追加に失敗しました: " + error.message);
     }
-    window.location.reload();
+    window.location.reload(); // ページをリロード
   };
+
   return (
     <div className="createPostPage">
       <div className="postContainer">
         <h2>企業を追加する</h2>
+        {error && <p className="error-message">{error}</p>}
         <div className="inputPost">
           <div>会社名</div>
           <input
@@ -110,7 +100,7 @@ export const Home = () => {
           />
         </div>
         <button className="createPostButton" onClick={createPost}>
-          記録
+          追加
         </button>
       </div>
     </div>

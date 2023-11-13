@@ -1,8 +1,4 @@
-import {
-  collection,
-  //  deleteDoc, doc,
-  getDocs,
-} from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { db } from "../firebase";
 import "./css/Home.css";
@@ -18,10 +14,10 @@ const CompanyList = () => {
     getPosts();
   }, []);
 
-  // const handleDelete = async (id) => {
-  //   await deleteDoc(doc(db, "posts", id));
-  //   window.location.reload();
-  // };
+  const handleDelete = async (id) => {
+    await deleteDoc(doc(db, "posts", id));
+    window.location.reload();
+  };
 
   console.log(postList);
 
@@ -35,6 +31,11 @@ const CompanyList = () => {
           </div>
         );
       })}
+      <button
+        onClick={() => {
+          handleDelete(postList.id);
+        }}
+      ></button>
     </div>
   );
 };
