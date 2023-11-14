@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { db } from "../firebase";
 import {
   getDoc,
@@ -9,14 +9,16 @@ import {
   query,
   where,
   deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
-import { Link } from "react-router-dom";
 import "./css/CompanyData.css";
 
 function CompanyData() {
   const { id } = useParams();
   const [data, setData] = useState(null);
   const [matchingMemos, setMatchingMemos] = useState([]);
+  const [editMemoId, setEditMemoId] = useState(null);
+  const [editText, setEditText] = useState("");
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -53,6 +55,25 @@ function CompanyData() {
     window.location.reload();
   };
 
+  const startEdit = (memo) => {
+    setEditMemoId(memo.id);
+    setEditText(memo.postText);
+  };
+
+  const saveEdit = async () => {
+    await updateDoc(doc(db, "companymemo", editMemoId), {
+      postText: editText,
+    });
+    setEditMemoId(null);
+    setEditText("");
+    window.location.reload();
+  };
+
+  const cancelEdit = () => {
+    setEditMemoId(null);
+    setEditText("");
+  };
+
   return (
     <div className="CompanyData">
       {data ? (
@@ -61,13 +82,14 @@ function CompanyData() {
             <header>{data.title}</header>
             <Link to="/companymemo">
               <button>追加</button>
-              <button onClick={companyDelete}>削除</button>
             </Link>
+            <button onClick={companyDelete}>削除</button>
           </div>
           {matchingMemos.map((memo, index) => {
             const createdAt = memo.createdAt?.toDate();
             const formattedDate = createdAt?.toLocaleDateString();
             const formattedTime = createdAt?.toLocaleTimeString();
+
             return (
               <div key={index} className="post">
                 {createdAt && (
@@ -75,8 +97,24 @@ function CompanyData() {
                     投稿日時: {formattedDate} {formattedTime}
                   </p>
                 )}
-                <p>{memo.postText}</p>
-                <button onClick={() => companymemoDelete(memo.id)}>削除</button>
+                {editMemoId === memo.id ? (
+                  <>
+                    <textarea
+                      value={editText}
+                      onChange={(e) => setEditText(e.target.value)}
+                    />
+                    <button onClick={saveEdit}>保存</button>
+                    <button onClick={cancelEdit}>キャンセル</button>
+                  </>
+                ) : (
+                  <>
+                    <p>{memo.postText}</p>
+                    <button onClick={() => startEdit(memo)}>編集</button>
+                    <button onClick={() => companymemoDelete(memo.id)}>
+                      削除
+                    </button>
+                  </>
+                )}
               </div>
             );
           })}
