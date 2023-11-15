@@ -12,6 +12,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import "./css/CompanyData.css";
+// import ReactMarkdown from "react-markdown";
 
 function CompanyData() {
   const { id } = useParams();
@@ -99,6 +100,7 @@ function CompanyData() {
                 )}
                 {editMemoId === memo.id ? (
                   <>
+                    {" "}
                     <textarea
                       value={editText}
                       onChange={(e) => setEditText(e.target.value)}
