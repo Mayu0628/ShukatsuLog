@@ -6,7 +6,6 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import './css/Sidebar.css';
 import { auth } from '../firebase';
-// import { useAuthState } from 'react-firebase-hooks/auth';
 
 const Sidebar = () => {
   const [posts, setPosts] = useState([]);
@@ -66,12 +65,6 @@ const Sidebar = () => {
               />
               <span>{post.title}</span>
             </Link>
-            <div className="detail-button">
-              {/* <FontAwesomeIcon
-                icon={faEllipsisVertical}
-                className="faCaretDown"
-              /> */}
-            </div>
           </li>
         ))}
       </ul>

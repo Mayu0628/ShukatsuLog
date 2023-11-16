@@ -1,12 +1,11 @@
 .Sidebar {
-  background-color: #f2f8ff;
+  background-color: #BCE2E8;
   box-shadow: 6px 4px 11px -2px #e0e0e0;
-  border-radius: 0px;
-  padding: 20px 15px 0 15px;
   overflow-y: auto;
   color: #555555;
   width: 18%;
   height: 100vh;
+  padding: 10px;
 }
 
 /* サイドバー内のリンクのスタイル設定 */
@@ -31,41 +30,31 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  padding-left: 20px;
+  padding: 5px 20px 5px 20px;
+}
+
+.nav-item:hover {
+  background-color: #9ACDD2;
+  border-radius: 20px;
 }
 
 /* ナビゲーションアイコン */
-.nav-item .fa-svg {
-  width: 35px;
-}
-
 .company_header {
   margin-bottom: 15px;
 }
 
+.companyList {
+  align-items: center;
+}
+
 .title {
   display: flex;
-  justify-content: center;
-  align-items: center;
   list-style: none;
-}
-
-.company_img_icon {
-  box-shadow: 6px 4px 11px -2px #e0e0e0;
-  border-radius: 5px;
-  margin-right: 10px;
-  width: 35px;
-  height: 35px;
-}
-
-.detail-button {
-  margin-left: auto;
-  padding-right: 10px;
+  align-items: center;
 }
 
 .title:hover {
-  background-color: #f2f2f2;
-}
-
-.detail-button:hover .faCaretDown {
-  color: #000;
+  background-color: #9ACDD2;
+  border-radius: 20px;
 }

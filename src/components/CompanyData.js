@@ -11,8 +11,8 @@ import {
   deleteDoc,
   updateDoc,
 } from "firebase/firestore";
+import ReactMarkdown from "react-markdown";
 import "./css/CompanyData.css";
-// import ReactMarkdown from "react-markdown";
 
 function CompanyData() {
   const { id } = useParams();
@@ -100,13 +100,16 @@ function CompanyData() {
                 )}
                 {editMemoId === memo.id ? (
                   <>
-                    {" "}
                     <textarea
                       value={editText}
                       onChange={(e) => setEditText(e.target.value)}
                     />
                     <button onClick={saveEdit}>保存</button>
                     <button onClick={cancelEdit}>キャンセル</button>
+                    {/* マークダウンプレビュー */}
+                    <div className="markdown-preview">
+                      <ReactMarkdown>{editText}</ReactMarkdown>
+                    </div>
                   </>
                 ) : (
                   <>

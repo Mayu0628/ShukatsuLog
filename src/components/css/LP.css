@@ -7,7 +7,7 @@
 /* メインセクションと特徴セクションの共通スタイル */
 .main-section, .features-section, .testimonials-section {
   width: 100%;
-  padding: 50px 20px;
+  padding: 40px 0 40px 0;
 }
 
 /* キャッチフレーズ部分 */
@@ -18,24 +18,28 @@
 }
 
 .left-container, .right-container {
-  width: 50%;
-  padding: 0 20px;
+  width: 100%;
+  text-align: center;
 }
 
 .left-container img {
-  width: 50%;
-  margin-left: 120px;
+  width: 55%;
+  margin-left: 20px;
 }
 
 .main-section h1 {
   font-size: 36px;
-  margin-bottom: 20px;
+}
+
+.right-container {
+  margin-right: 20px;
 }
 
 /* 特徴 */
 .features {
   display: flex;
   justify-content: center;
+  text-align: center;
 }
 
 .feature {
@@ -43,7 +47,7 @@
   border-radius: 50%;
   background-color: #7fd0ff;
   margin: 20px;
-  padding: 50px;
+  padding: 70px;
   text-align: center;
   align-items: center;
   box-shadow: 6px 4px 11px -2px #b8b8b8;
