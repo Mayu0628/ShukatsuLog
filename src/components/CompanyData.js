@@ -81,10 +81,12 @@ function CompanyData() {
         <>
           <div className="CompanyData_header">
             <header>{data.title}</header>
-            <Link to="/companymemo">
-              <button>追加</button>
-            </Link>
-            <button onClick={companyDelete}>削除</button>
+            <div className="CompanyData_content">
+              <Link to="/companymemo">
+                <button>追加</button>
+              </Link>
+              <button onClick={companyDelete}>削除</button>
+            </div>
           </div>
           {matchingMemos.map((memo, index) => {
             const createdAt = memo.createdAt?.toDate();

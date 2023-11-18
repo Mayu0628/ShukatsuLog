@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faBuilding } from '@fortawesome/free-solid-svg-icons';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
-import './css/Sidebar.css';
-import { auth } from '../firebase';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHouse, faBuilding } from "@fortawesome/free-solid-svg-icons";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
+import "./css/Sidebar.css";
+import { auth } from "../firebase";
 
 const Sidebar = () => {
   const [posts, setPosts] = useState([]);
@@ -15,13 +15,15 @@ const Sidebar = () => {
   useEffect(() => {
     const getPosts = async (uid) => {
       try {
-        const postsRef = collection(db, 'posts');
-        const q = query(postsRef, where('author.id', '==', uid));
+        const postsRef = collection(db, "posts");
+        const q = query(postsRef, where("author.id", "==", uid));
         const querySnapshot = await getDocs(q);
-        setPosts(querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+        setPosts(
+          querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+        );
       } catch (err) {
-        setError('データの取得中にエラーが発生しました。');
-        console.error('データ取得エラー:', err);
+        setError("データの取得中にエラーが発生しました。");
+        console.error("データ取得エラー:", err);
       }
     };
 
@@ -29,7 +31,9 @@ const Sidebar = () => {
       if (user) {
         getPosts(user.uid);
       } else {
-        setError('ログインしているアカウントの投稿のみを表示することができます。');
+        setError(
+          "ログインしているアカウントの投稿のみを表示することができます。"
+        );
       }
     });
 
@@ -55,18 +59,20 @@ const Sidebar = () => {
       <div className="company_header">企業一覧</div>
       {error && <div className="error-message">{error}</div>}
       <ul className="companyList">
-        {posts.map((post) => (
-          <li key={post.id} className="title">
+        <li className="company_item">
+          {posts.map((post) => (
             <Link to={`/${post.id}`}>
-              <img
-                src={post.url.image}
-                alt={post.url.title}
-                className="company_img_icon"
-              />
-              <span>{post.title}</span>
+              <div className="ii">
+                <img
+                  src={post.url.image}
+                  alt={post.url.title}
+                  className="company_img_icon"
+                />
+                <span>{post.title}</span>
+              </div>
             </Link>
-          </li>
-        ))}
+          ))}
+        </li>
       </ul>
     </div>
   );
