@@ -1,11 +1,11 @@
 .Sidebar {
-  background-color: #BCE2E8;
+  background-color: #c0dbff;
   box-shadow: 6px 4px 11px -2px #e0e0e0;
-  overflow-y: auto;
   color: #555555;
   width: 18%;
   height: 100vh;
   padding: 10px;
+  overflow-y: auto;
 }
 
 /* サイドバー内のリンクのスタイル設定 */
@@ -35,7 +35,7 @@
 }
 
 .nav-item:hover {
-  background-color: #9ACDD2;
+  background-color: #a0c9ff;
   border-radius: 20px;
 }
 
@@ -55,6 +55,6 @@
 }
 
 .title:hover {
-  background-color: #9ACDD2;
+  background-color: #a0c9ff;
   border-radius: 20px;
 }

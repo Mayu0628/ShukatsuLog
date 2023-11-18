@@ -73,31 +73,30 @@ const CompanyMemo = ({ isAuth }) => {
 
   return (
     <div className="CompanyMemo">
+      <div className="Memoheader">
+        <h2>メモを追加する</h2>
+        <button className="postButton" onClick={createPost}>
+          記録
+        </button>
+      </div>
       <div className="memoContainer">
-        <div className="CreateMemo">
-          <h2>メモを追加する</h2>
-          <div className="inputMemo">
-            <select
-              value={selectedCompanyName}
-              onChange={(e) => setSelectedCompanyName(e.target.value)}
-            >
-              {titles.map((titleObj, index) => (
-                <option key={index} value={titleObj.title}>
-                  {titleObj.title}
-                </option>
-              ))}
-            </select>
-            <textarea
-              placeholder="投稿内容を入力"
-              value={postText}
-              onChange={handleTextChange}
-            />
-            <button className="postButton" onClick={createPost}>
-              記録
-            </button>
-          </div>
+        <div className="inputMemo">
+          <select
+            value={selectedCompanyName}
+            onChange={(e) => setSelectedCompanyName(e.target.value)}
+          >
+            {titles.map((titleObj, index) => (
+              <option key={index} value={titleObj.title}>
+                {titleObj.title}
+              </option>
+            ))}
+          </select>
+          <textarea
+            placeholder="投稿内容を入力"
+            value={postText}
+            onChange={handleTextChange}
+          />
         </div>
-
         <div className="previewContainer">
           <h2>プレビュー</h2>
           <ReactMarkdown>{previewText}</ReactMarkdown>
