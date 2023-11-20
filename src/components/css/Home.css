@@ -118,3 +118,9 @@ img {
   height: 20px;
 }
 
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin: 0;
+  padding: 0;
+}
