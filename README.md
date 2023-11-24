@@ -1,5 +1,5 @@
 # 就活ログ
-
+URL: https://shukatsu-log.vercel.app/
 ## 初回
 
 npm install
