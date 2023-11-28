@@ -79,7 +79,7 @@ CompanyData.js
 | -------------- | ------ | ---------------------- |
 | title          | string | 会社名                 |
 | contents       | string | 内容                   |
-| author         | string | 投稿者情報のオブジェク |
+| createdAt         | timestamp | 日付 |
 
 ## 会社メモ登録
 
